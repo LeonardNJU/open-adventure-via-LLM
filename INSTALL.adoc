@@ -23,3 +23,5 @@ You can also use pip to install PyYAML: `pip3 install PyYAML`.
 5. Run `./advent` to play.
 
 6. If you want to buld the documentation you will need asciidoctor.
+
+7. Running the regression tests requires batchspell

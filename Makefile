@@ -72,11 +72,11 @@ cppcheck:
 pylint:
 	@-pylint --score=n *.py */*.py
 
-check: advent cheat pylint cppcheck
+check: advent cheat pylint cppcheck spellcheck
 	cd tests; $(MAKE) --quiet
 
 spellcheck:
-	@batchspell adventure.yaml
+	@batchspell adventure.yaml advent.adoc
 
 reflow:
 	@clang-format --style="{IndentWidth: 8, UseTab: ForIndentation}" -i $$(find . -name "*.[ch]")
