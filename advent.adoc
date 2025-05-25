@@ -3,6 +3,9 @@
 // SPDX-FileCopyrightText: (C) Eric S. Raymond <esr@thyrsus.com>
 // SPDX-License-Identifier: CC-BY-4.0
 
+// batchspell: add advent logfile savefile roleplaying Gillogly PDP Ctrl-D
+// batchspell: add EOF autosave endianness wumpus zork nethack
+
 == NAME ==
 advent - Colossal Cave Adventure
 
