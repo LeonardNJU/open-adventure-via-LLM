@@ -37,5 +37,7 @@ https://www.patreon.com/esr[support me on Patreon.]
 
 // end
 
+This code is commonly packaged as "open-adventure".
 
-
+image:https://repology.org/badge/vertical-allrepos/open-adventure.svg[Repology
+package status]
