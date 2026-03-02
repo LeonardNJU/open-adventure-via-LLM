@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include "advent.h"
 #include <ctype.h>
 #include <editline/readline.h>
 #include <getopt.h>
@@ -13,6 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "advent.h"
 
 #define DIM(a) (sizeof(a) / sizeof(a[0]))
 

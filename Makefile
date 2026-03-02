@@ -84,7 +84,8 @@ clean:
 
 # Validate
 
-CSUPPRESSIONS = --suppress=checkersReport --suppress=missingIncludeSystem --suppress=invalidscanf
+CSUPPRESSIONS = --suppress=checkersReport --suppress=missingInclude \
+	--suppress=missingIncludeSystem --suppress=invalidscanf --suppress=unmatchedSuppression
 cppcheck:
 	@-cppcheck -I. --quiet --template=gcc -UOBJECT_SET_SEEN --enable=all $(CSUPPRESSIONS) *.[ch]
 

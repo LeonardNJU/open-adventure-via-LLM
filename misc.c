@@ -290,19 +290,19 @@ bool silent_yes_or_no(void) {
 			continue;
 		}
 
-		char *firstword = (char *)xcalloc(strlen(reply) + 1);
+		unsigned char *firstword = (unsigned char *)xcalloc(strlen(reply) + 1);
 		sscanf(reply, "%s", firstword);
 
 		free(reply);
 
-		for (int i = 0; i < (int)strlen(firstword); ++i) {
+		for (int i = 0; i < (int)strlen((char *)firstword); ++i) {
 			firstword[i] = tolower(firstword[i]);
 		}
 
-		int yes = strncmp("yes", firstword, sizeof("yes") - 1);
-		int y = strncmp("y", firstword, sizeof("y") - 1);
-		int no = strncmp("no", firstword, sizeof("no") - 1);
-		int n = strncmp("n", firstword, sizeof("n") - 1);
+		int yes = strncmp("yes", (char *)firstword, sizeof("yes") - 1);
+		int y = strncmp("y", (char *)firstword, sizeof("y") - 1);
+		int no = strncmp("no", (char *)firstword, sizeof("no") - 1);
+		int n = strncmp("n", (char *)firstword, sizeof("n") - 1);
 
 		free(firstword);
 
