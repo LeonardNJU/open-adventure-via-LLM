@@ -3,6 +3,10 @@ by Eric S. Raymond
 // SPDX-FileCopyrightText: (C) Eric S. Raymond <esr@thyrsus.com>
 // SPDX-License-Identifier: CC-BY-4.0
 
+// spellcheck: add fons origo Beranek IFA's O'Dwyer RNG YAML
+// spellcheck: add roguelike roguelikes dnd pedit5 Yob's
+// spellcheck: add museumization
+
 Adventure is the fons et origo of all later dungeon-crawling computer
 games, the granddaddy of interactive fiction, and one of the hallowed
 artifacts of hacker folklore.
@@ -128,12 +132,12 @@ YAML; this makes the brilliant design of it much easier to comprehend.
 
 == Earlier non-influences ==
 
-There is record of one earlier dungeon-crawling game called "dnd",
-written in 1974-75 on the PLATO system at University of Illinois
-<<DND>>.  This was in some ways similar to later roguelike games but
-not to Adventure.  The designers of later roguelikes frequently cite
-Adventure as an influence, but not dnd; like PLATO itself, dnd seems
-not to have become known outside of its own user community until
+There is record of two earlier dungeon-crawling games written in
+1974-75 on the PLATO system at University of Illinois <<DND>>,
+<<PEDIT5>>.  These were in some ways similar to later roguelike games
+but not to Adventure.  The designers of later roguelikes frequently
+cite Adventure as an influence, but not dnd or pedit5; like PLATO itself, dnd
+seems not to have become known outside of its own user community until
 rediscovered by computer historians many years after Adventure
 shipped.
 
@@ -156,7 +160,6 @@ even as primitive as Adventure's.
 
 == Sources ==
 
-// asciidoc and asciidoctor both foo up on bare links ending in ')'.
 [bibliography]
 
 - [[[IFA]]] http://rickadams.org/adventure/[Colossal Cave Adventure Page]
@@ -167,7 +170,10 @@ even as primitive as Adventure's.
   http://www.digitalhumanities.org/dhq/vol/1/2/000009/000009.html[Digital
   Humanities Quarterly]
 
-- [[[DND]]] https://en.wikipedia.org/wiki/Dnd_(video_game)[dnd (video game)]
+- [[[DND]]] https://en.wikipedia.org/wiki/Dnd_(video_game)[dnd (video
+  game)]
+
+- [[[PEDIT5]]] https://en.wikipedia.org/wiki/Pedit5
 
 - [[[WUMPUS]]] https://en.wikipedia.org/wiki/Hunt_the_Wumpus[Hunt The Wumpus]
 
