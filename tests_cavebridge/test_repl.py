@@ -300,6 +300,30 @@ def test_save_then_load_order(tmp_path):
     assert open(store._path("cp"), "rb").read() == b"LIVE"
 
 
+def test_save_overwrite_can_be_declined(tmp_path):
+    s = Settings(autosave_path=str(tmp_path / "live.adv"))
+    open(s.autosave_path, "wb").write(b"LIVE")
+    store = SaveStore(str(tmp_path / "slots"))
+    out = []
+    inputs = iter(["/save cp", "/save cp", "n", "/quit"])    # 2nd save -> exists -> decline
+    run_repl(settings=s, engine=StubEngine(), llm=FakeLLM([]), vocab=Vocab([], [], []),
+             input_fn=lambda: next(inputs), output_fn=out.append, saves=store)
+    joined = "\n".join(out)
+    assert "Overwrite" in joined and "cancelled" in joined   # prompted, then cancelled
+    assert sum(1 for x in out if "saved 'cp'" in x) == 1      # saved only once
+
+
+def test_save_overwrite_can_be_confirmed(tmp_path):
+    s = Settings(autosave_path=str(tmp_path / "live.adv"))
+    open(s.autosave_path, "wb").write(b"LIVE")
+    store = SaveStore(str(tmp_path / "slots"))
+    out = []
+    inputs = iter(["/save cp", "/save cp", "y", "/quit"])
+    run_repl(settings=s, engine=StubEngine(), llm=FakeLLM([]), vocab=Vocab([], [], []),
+             input_fn=lambda: next(inputs), output_fn=out.append, saves=store)
+    assert sum(1 for x in out if "saved 'cp'" in x) == 2      # confirmed -> overwrote
+
+
 def test_load_missing_slot_keeps_engine_open(tmp_path):
     s = Settings(autosave_path=str(tmp_path / "live.adv"))
     open(s.autosave_path, "wb").write(b"LIVE")

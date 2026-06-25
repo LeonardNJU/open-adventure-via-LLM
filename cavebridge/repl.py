@@ -62,6 +62,16 @@ def run_repl(*, settings: Settings, engine: Engine, llm: LLM, vocab: Vocab,
     save_dir = os.path.dirname(config_path) if config_path else None
     diag_state: dict = {"line": "", "snapshot": None}   # cur input + last snapshot
 
+    def confirm(question: str) -> bool:
+        """Ask a yes/no question by reading the next input line."""
+        output_fn(question)
+        try:
+            ans = input_fn().strip().lower()
+        except (EOFError, StopIteration):
+            return False
+        return (ans[:1] in ("y", "1")
+                or any(k in ans for k in ("是", "对", "好", "覆盖", "确", "yes")))
+
     def persist_config() -> None:
         if config_path:
             try:
@@ -431,8 +441,16 @@ def run_repl(*, settings: Settings, engine: Engine, llm: LLM, vocab: Vocab,
                 output_fn(hints.maybe_hint(llm, current, vocab, settings.language,
                           explicit=True) or "[no hint]")
             elif cmd == "save" and saves:
-                saves.save(arg, settings.autosave_path)
-                output_fn(f"[saved '{arg}']")
+                zh = settings.language == "zh"
+                if not arg:
+                    output_fn("用法：/save <名字>" if zh else "usage: /save <name>")
+                elif arg in saves.list() and not confirm(
+                        f"已存在存档 '{arg}'，覆盖吗？(y/n)" if zh
+                        else f"A save named '{arg}' already exists. Overwrite? (y/n)"):
+                    output_fn("[已取消，未覆盖]" if zh else "[cancelled — not overwritten]")
+                else:
+                    saves.save(arg, settings.autosave_path)
+                    output_fn(f"[saved '{arg}']")
             elif cmd == "load" and saves and engine_factory:
                 if arg not in saves.list():                  # validate BEFORE closing
                     output_fn(f"[no save named '{arg}']")
