@@ -23,8 +23,9 @@ WORKDIR /app
 COPY . /app
 
 # Build the -j/autosave engine (make_dungeon.py needs pyyaml) and install deps.
+# Note: no `make clean` — the COPY is already a fresh tree, and `make clean`
+# recurses into tests/ (excluded by .dockerignore), which would loop forever.
 RUN pip install --no-cache-dir pyyaml openai \
-    && make clean \
     && make CFLAGS="-DADVENT_AUTOSAVE"
 
 ENV CAVEBRIDGE_LANG=zh

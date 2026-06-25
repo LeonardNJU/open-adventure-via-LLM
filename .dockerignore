@@ -10,4 +10,6 @@ dungeon.c
 dungeon.h
 docs/
 tests/
+assets/
+.github/
 *.adv
