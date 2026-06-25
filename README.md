@@ -13,8 +13,8 @@ SPDX-License-Identifier: BSD-2-Clause
 # Open Adventure × LLM — *CaveBridge*
 
 > Play the 1977 classic **Colossal Cave Adventure** in natural language — an LLM
-> Dungeon Master front-end that adds a modern, forgiving interface and narration in
-> English or Chinese, while the original game engine stays the single source of truth.
+> Dungeon Master front-end that adds a modern, forgiving interface and narrates in any
+> language your model speaks, while the original game engine stays the single source of truth.
 
 CaveBridge wraps Eric S. Raymond's [Open Adventure](README-open-adventure.adoc) C
 engine. It does **not** reimplement the game. An LLM sits in front of the unmodified
@@ -37,7 +37,8 @@ interface.**
 ## Highlights
 
 - **Natural language in, any phrasing** — no need to learn `VERB NOUN`; type how you talk.
-- **Bilingual narration** — English or Chinese, switchable mid-game with `/lang`.
+- **Narration in your language** — English, 中文, or anything else your model speaks;
+  switchable mid-game with `/lang`. (The built-in how-to-play guide ships in EN/中文.)
 - **Grounded, no fabrication, no spoilers** — narration is bound to engine output;
   hints only when you ask (`/hint`) or opt in (`/hints on`).
 - **Penalty-free saves** — the original *charges score* to save; here every turn is
@@ -142,7 +143,7 @@ new game offers a how-to-play guide.
 | `/help` | List commands |
 | `/config` | Show / change the LLM connection (`/config model <name>`, `base`, `key`, `lang`) |
 | `/hint` · `/hints on｜off` | One hint · auto-hints when stuck |
-| `/lang en｜zh` | Switch narration language |
+| `/lang <language>` | Switch narration language (e.g. `en`, `zh`, `français`, …) |
 | `/raw on｜off` | Show/hide the canonical command + engine output |
 | `/purist on｜off` | Faithful 1977 mode (translation + narration only) |
 | `/multistep on｜off` · `/autoadvance on｜off` | Toggle conveniences individually |
@@ -163,7 +164,7 @@ wizard**, so any of these works:
 | Var | Default | Meaning |
 |---|---|---|
 | `OPENAI_BASE_URL` / `OPENAI_API_KEY` / `OPENAI_MODEL` | — | LLM endpoint (overrides the saved config) |
-| `CAVEBRIDGE_LANG` | `en` | `en` or `zh` |
+| `CAVEBRIDGE_LANG` | `en` | narration language — `en`, `zh`, or any language your model speaks |
 | `CAVEBRIDGE_PURIST` | `0` | `1` = faithful mode (multi-step + auto-advance + hints off) |
 | `CAVEBRIDGE_MULTISTEP` | `1` | several actions per line |
 | `CAVEBRIDGE_AUTOADVANCE` | `1` | "keep going until …" loops |
