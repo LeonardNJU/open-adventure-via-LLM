@@ -10,20 +10,25 @@ permissions:
   contents: write          # create the release + upload assets
 
 jobs:
-  # Linux: build on an OLDER runner (glibc 2.35) using the system Python 3.10, which
-  # ships a *shared* libpython that PyInstaller requires. Result runs on Debian 12+ /
-  # Ubuntu 22.04+. (ubuntu-latest=24.04 links GLIBC_2.38, which Debian 12 lacks;
-  # manylinux's bundled Python is static-only, so PyInstaller can't use it either.)
+  # Linux: build in an AlmaLinux 8 container (glibc 2.28) with dnf's python3.11,
+  # which — unlike manylinux's static /opt/python — ships a *shared* libpython that
+  # PyInstaller requires. Result runs on glibc >= 2.28: Debian 10/11/12, Ubuntu
+  # 18.04+, RHEL/Alma/Rocky 8+, etc. (glibc is backward-compatible, so one binary
+  # built on the oldest target runs everywhere newer.)
   linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: almalinux:8
     steps:
+      - name: Install build toolchain
+        run: |
+          dnf install -y --setopt=install_weak_deps=False \
+            python3.11 python3.11-devel gcc make git tar gzip findutils
+
       - uses: actions/checkout@v4
 
       - name: Build engine + one-file bundle
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3-venv python3-dev
-          /usr/bin/python3 -m venv /tmp/venv         # system 3.10 -> shared libpython @ glibc 2.35
+          python3.11 -m venv /tmp/venv      # dnf python3.11 -> shared libpython @ glibc 2.28
           . /tmp/venv/bin/activate
           python -m pip install --upgrade pip
           pip install pyyaml openai pyinstaller
