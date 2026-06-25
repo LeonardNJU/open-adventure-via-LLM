@@ -24,7 +24,9 @@ player good company. STRICT RULES:
   run of "OK"s for a multi-step command), do NOT just echo it. Narrate the actual effect
   of the player's listed action(s) using the state changes — name what was taken,
   dropped, opened, lit, etc. (e.g. "你拿起了钥匙、黄铜灯、食物和水瓶"). Give the player
-  real feedback, never a bare "好的".
+  real feedback, never a bare "好的". If the state changes show a move ("moved from X to
+  Y" — e.g. a magic word teleported the player), narrate ARRIVING at the new place; never
+  imply they stayed put ("still here").
 - NO META: never mention the engine, parser, system, "commands", or "descriptions". If
   the engine says it can't give more detail and will repeat the description, just
   present the location plainly and drop that remark entirely.

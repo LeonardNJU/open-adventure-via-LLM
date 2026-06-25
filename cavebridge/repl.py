@@ -42,7 +42,9 @@ def _delta(prev: GameState | None, cur: GameState) -> str | None:
     if lost:
         parts.append("no longer carrying: " + ", ".join(lost))
     if prev.loc != cur.loc:
-        parts.append(f"moved to {cur.loc_name}")
+        # from -> to so the narration reflects the move (e.g. an xyzzy teleport),
+        # instead of reading "You're inside building" as "still inside".
+        parts.append(f"moved from {prev.loc_name} to {cur.loc_name}")
     if prev.flags.get("closed") != cur.flags.get("closed"):
         parts.append("the cave is now closed")
     return "; ".join(parts) or None

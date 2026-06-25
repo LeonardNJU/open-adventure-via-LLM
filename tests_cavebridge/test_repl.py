@@ -328,6 +328,15 @@ def test_executed_commands_and_delta_reach_narrator():
     assert "now carrying: lamp" in narration                 # state delta
 
 
+def test_delta_reports_move_from_and_to():
+    # Regression: a move must read as from->to so a teleport isn't narrated as "still here".
+    from cavebridge.repl import _delta
+    a = GameState(turns=0, loc=5, loc_name="Debris Room", dark=False)
+    b = GameState(turns=1, loc=3, loc_name="Inside Building", dark=False)
+    d = _delta(a, b) or ""
+    assert "Debris Room" in d and "Inside Building" in d and "moved from" in d
+
+
 def test_empty_narration_retries_then_shows_something():
     # The streamed narration comes back empty -> retry non-streaming; that text
     # must still reach the player (no silent turn).
