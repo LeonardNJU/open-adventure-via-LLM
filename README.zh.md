@@ -111,17 +111,18 @@ export OPENAI_MODEL="gemini-3.1-flash-lite"
 
 - **Windows** —— 下载 `cavebridge-windows-x86_64.exe`。双击运行（会自动打开一个命令行
   窗口），或在 PowerShell/cmd 中运行。
-- **macOS** —— 下载 `cavebridge-macos-arm64.tar.gz`。它是命令行程序，要**在终端里运行、
-  不能双击**（双击只会用文本编辑器打开原始文件）。它没有签名，先清一次 Gatekeeper 隔离标记：
+- **macOS** —— 下载 `cavebridge-macos-arm64.tar.gz` 解压。进文件夹后**双击 `run.command`**
+  即可玩 —— 它会自动清掉 macOS 的隔离标记并启动（若被拦，右键 `run.command` → 打开 → 打开）。
+  程序未签名,遇到"已损坏"弹窗**千万别点 Move to Trash**。想用终端的话：
   ```bash
   tar xzf cavebridge-macos-arm64.tar.gz
-  xattr -dr com.apple.quarantine cavebridge-macos-arm64   # 放行未签名程序
+  xattr -dr com.apple.quarantine cavebridge-macos-arm64
   ./cavebridge-macos-arm64/cavebridge
   ```
-- **Linux** —— 下载 `cavebridge-linux-x86_64.tar.gz`，解压后在终端里运行：
+- **Linux** —— 下载 `cavebridge-linux-x86_64.tar.gz` 解压后运行：
   ```bash
   tar xzf cavebridge-linux-x86_64.tar.gz
-  ./cavebridge-linux-x86_64/cavebridge
+  ./cavebridge-linux-x86_64/run.sh        # 或 ./cavebridge-linux-x86_64/cavebridge
   ```
 
 ### 从源码编译（Linux / macOS）

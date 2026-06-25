@@ -42,6 +42,9 @@ jobs:
             --collect-all openai --paths . \
             packaging/cavebridge_entry.py
           mv dist/cavebridge dist/cavebridge-linux-x86_64
+          cp packaging/linux-run.sh dist/cavebridge-linux-x86_64/run.sh
+          cp packaging/linux-READ-ME-FIRST.txt dist/cavebridge-linux-x86_64/READ-ME-FIRST.txt
+          chmod +x dist/cavebridge-linux-x86_64/run.sh
           mkdir -p out
           tar -C dist -czf out/cavebridge-linux-x86_64.tar.gz cavebridge-linux-x86_64
 
@@ -75,7 +78,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Build engine + folder bundle (tar.gz)
+      # onedir (fast launch) bundled with run.command + READ-ME-FIRST.txt. A downloaded
+      # onedir quarantines every nested framework, so macOS may say "Python.framework is
+      # damaged"; run.command clears the quarantine flag (xattr -dr) and launches, so the
+      # user gets the speed of onedir without fighting Gatekeeper by hand.
+      - name: Build engine + folder bundle (tar.gz with launcher)
         run: |
           pip install pyyaml openai pyinstaller
           make CFLAGS="-DADVENT_AUTOSAVE -DADVENT_NO_EDITLINE" LIBS=
@@ -85,6 +92,9 @@ jobs:
             --collect-all openai --paths . \
             packaging/cavebridge_entry.py
           mv dist/cavebridge dist/cavebridge-macos-arm64
+          cp packaging/macos-run.command dist/cavebridge-macos-arm64/run.command
+          cp packaging/macos-READ-ME-FIRST.txt "dist/cavebridge-macos-arm64/READ-ME-FIRST.txt"
+          chmod +x dist/cavebridge-macos-arm64/run.command
           mkdir -p out
           tar -C dist -czf out/cavebridge-macos-arm64.tar.gz cavebridge-macos-arm64
       - uses: actions/upload-artifact@v4

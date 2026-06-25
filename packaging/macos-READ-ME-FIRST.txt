@@ -1,0 +1,26 @@
+CaveBridge — how to run on macOS
+================================
+
+CaveBridge is an unsigned app, so macOS "quarantines" files you download and may
+warn that "Python.framework is damaged". Nothing is actually wrong — that's just
+Gatekeeper. Do NOT click "Move to Trash" (it deletes a file the app needs).
+
+Easiest way to run
+------------------
+  1. Double-click  run.command
+  2. If macOS blocks it ("unidentified developer"):
+     right-click run.command  ->  Open  ->  Open.
+
+run.command clears the quarantine flag for this folder and starts the game in a
+Terminal window. After the first time, a plain double-click works.
+
+From the Terminal instead
+-------------------------
+  xattr -dr com.apple.quarantine "<this folder>"
+  ./cavebridge
+
+First launch
+------------
+You'll be asked for your LLM connection (endpoint URL, API key, model name).
+Change it anytime in-game with  /config .  Recommended models are listed in the
+project README.
