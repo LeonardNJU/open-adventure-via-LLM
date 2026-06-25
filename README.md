@@ -102,8 +102,19 @@ run walks you through connecting to your LLM.
 
 - **Windows** — download `cavebridge-windows-x86_64.exe`. Double-click it (it opens its
   own console window) or run it from PowerShell/cmd.
-- **macOS** — download `cavebridge-macos-arm64`, then `chmod +x` it and run it in Terminal.
-- **Linux** — download `cavebridge-linux-x86_64`, then `chmod +x` it and run it.
+- **macOS** — it's a command-line program, so **run it from Terminal, not by
+  double-clicking** (double-clicking just opens the raw file in a text editor). It's
+  unsigned, so also clear Gatekeeper's quarantine flag once:
+  ```bash
+  chmod +x cavebridge-macos-arm64
+  xattr -d com.apple.quarantine cavebridge-macos-arm64   # allow an unsigned binary
+  ./cavebridge-macos-arm64
+  ```
+- **Linux** — run it from a terminal:
+  ```bash
+  chmod +x cavebridge-linux-x86_64
+  ./cavebridge-linux-x86_64
+  ```
 
 ### Build from source (Linux / macOS)
 
