@@ -90,6 +90,23 @@ def main() -> None:
     yaml_path = _locate("adventure.yaml", os.environ.get("CAVEBRIDGE_YAML"))
     advent_path = _locate(advent_name, os.environ.get("CAVEBRIDGE_ADVENT")
                           or (s.advent_path if s.advent_path != "./advent" else None))
+    if not os.path.exists(advent_path):
+        # Common when running from a source checkout without building the engine.
+        zh = s.language == "zh"
+        rel = "https://github.com/LeonardNJU/CaveBridge/releases"
+        if zh:
+            print(f"\n找不到游戏引擎 `advent`（期望位置：{advent_path}）。\n"
+                  "如果你是从源码运行，请先编译引擎：\n"
+                  '    make CFLAGS="-DADVENT_AUTOSAVE"\n'
+                  f"或直接下载对应平台的预编译版：{rel}\n"
+                  "（也可用 CAVEBRIDGE_ADVENT=/path/to/advent 指定路径。）")
+        else:
+            print(f"\nGame engine `advent` not found (looked for: {advent_path}).\n"
+                  "If you're running from source, build it first:\n"
+                  '    make CFLAGS="-DADVENT_AUTOSAVE"\n'
+                  f"or download a prebuilt binary for your platform: {rel}\n"
+                  "(You can also point CAVEBRIDGE_ADVENT=/path/to/advent.)")
+        sys.exit(1)
     vocab = load_vocab(yaml_path)
     exits_by_loc = load_exits(yaml_path)
     saves = SaveStore(os.path.join(save_dir, "saves"))
