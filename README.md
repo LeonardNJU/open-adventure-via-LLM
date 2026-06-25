@@ -94,6 +94,25 @@ them anytime in-game with `/config`.
 
 > Tip for local models: disable "thinking"/reasoning mode for snappier turns.
 
+### Tested models
+
+Any OpenAI-compatible chat model works. These three are tested and play well:
+
+| Model | Where / cost | Endpoint (`base`) |
+|---|---|---|
+| `gemini-3.1-flash-lite` | Google AI Studio — has a free tier | `https://generativelanguage.googleapis.com/v1beta/openai/` |
+| `deepseek-v4-flash` | DeepSeek API — very cheap | `https://api.deepseek.com/v1` |
+| `qwen3.5-9B` | self-hosted (LM Studio / Ollama / vLLM) | `http://localhost:1234/v1` |
+
+Set the connection on first run, with `/config` in-game, or via env vars. Example for
+Google's free Gemini tier:
+
+```bash
+export OPENAI_BASE_URL="https://generativelanguage.googleapis.com/v1beta/openai/"
+export OPENAI_API_KEY="<your Google AI Studio key>"
+export OPENAI_MODEL="gemini-3.1-flash-lite"
+```
+
 ### Download a prebuilt binary (recommended)
 
 Self-contained builds — no Python, no compiler, no dependencies — are attached to

@@ -80,6 +80,8 @@ def run_repl(*, settings: Settings, engine: Engine, llm: LLM, vocab: Vocab,
                 base_url=settings.base_url, model=settings.model,
                 language=settings.language, player_input=diag_state["line"],
                 location=getattr(current, "loc_name", "?"), recent=history)
+            if settings.api_key:                 # belt-and-suspenders: never leak the key
+                text = text.replace(settings.api_key, "***REDACTED***")
             path = diag.save_snapshot(save_dir, kind, text)
             diag_state["snapshot"] = (path, text)
             return path
