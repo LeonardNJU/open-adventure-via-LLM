@@ -1,6 +1,6 @@
 name: Release
 
-# Cut a release by pushing a tag, e.g.:  git tag v0.1.1 && git push github v0.1.1
+# Cut a release by pushing a tag, e.g.:  git tag v0.1.2 && git push github v0.1.2
 on:
   push:
     tags: ["v*"]
@@ -9,12 +9,15 @@ on:
 permissions:
   contents: write          # create the release + upload assets
 
+# Reusable release body (kept identical across jobs and REPLACED, not appended, so
+# the build jobs don't each tack on their own "Full Changelog" line).
+# Note: each job redefines this inline because YAML anchors aren't shared across jobs.
+
 jobs:
   # Linux: build in an AlmaLinux 8 container (glibc 2.28) with dnf's python3.11,
   # which — unlike manylinux's static /opt/python — ships a *shared* libpython that
-  # PyInstaller requires. Result runs on glibc >= 2.28: Debian 10/11/12, Ubuntu
-  # 18.04+, RHEL/Alma/Rocky 8+, etc. (glibc is backward-compatible, so one binary
-  # built on the oldest target runs everywhere newer.)
+  # PyInstaller needs. Runs on glibc >= 2.28 (Debian 10/11/12, Ubuntu 20.04+, RHEL 8+).
+  # onedir (a folder, shipped as .tar.gz) launches instantly — no per-run unpacking.
   linux:
     runs-on: ubuntu-latest
     container: almalinux:8
@@ -26,19 +29,21 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Build engine + one-file bundle
+      - name: Build engine + folder bundle (tar.gz)
         run: |
           python3.11 -m venv /tmp/venv      # dnf python3.11 -> shared libpython @ glibc 2.28
           . /tmp/venv/bin/activate
           python -m pip install --upgrade pip
           pip install pyyaml openai pyinstaller
           make CFLAGS="-DADVENT_AUTOSAVE -DADVENT_NO_EDITLINE" LIBS=
-          pyinstaller --onefile --name cavebridge --noconfirm \
+          pyinstaller --onedir --name cavebridge --noconfirm \
             --add-data "adventure.yaml:." \
             --add-binary "advent:." \
             --collect-all openai --paths . \
             packaging/cavebridge_entry.py
-          mkdir -p out && cp dist/cavebridge out/cavebridge-linux-x86_64
+          mv dist/cavebridge dist/cavebridge-linux-x86_64
+          mkdir -p out
+          tar -C dist -czf out/cavebridge-linux-x86_64.tar.gz cavebridge-linux-x86_64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -50,49 +55,70 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: out/*
-          # Static body, REPLACED (not appended) on each call, so the three build
-          # jobs don't each tack on their own "Full Changelog" line.
           append_body: false
           body: |
-            Self-contained builds — download the file for your platform and run it.
-            On first launch CaveBridge sets up your LLM connection (or set the
-            `OPENAI_*` env vars). See the README to get started.
+            Download the build for your platform.
 
-  # macOS (arm64) + Windows: one-file bundles on their native runners.
-  desktop:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-latest
-            asset: cavebridge-macos-arm64
-          - os: windows-latest
-            asset: cavebridge-windows-x86_64
-    runs-on: ${{ matrix.os }}
+            - **Linux / macOS** — extract the `.tar.gz`, then run the `cavebridge`
+              binary inside from a terminal (see the README; on macOS clear the
+              Gatekeeper quarantine first).
+            - **Windows** — run the `.exe` (double-click or from PowerShell/cmd).
+
+            On first launch CaveBridge asks for your LLM connection (or set the
+            `OPENAI_*` env vars).
+
+  # macOS (arm64): onedir -> .tar.gz, same as Linux.
+  macos:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Python deps (front-end + bundler)
-        run: pip install pyyaml openai pyinstaller
-
-      # ---- macOS: libedit-free engine, then a one-file bundle ----
-      - name: Build engine + bundle (macOS)
-        if: runner.os == 'macOS'
+      - name: Build engine + folder bundle (tar.gz)
         run: |
+          pip install pyyaml openai pyinstaller
           make CFLAGS="-DADVENT_AUTOSAVE -DADVENT_NO_EDITLINE" LIBS=
-          pyinstaller --onefile --name cavebridge --noconfirm \
+          pyinstaller --onedir --name cavebridge --noconfirm \
             --add-data "adventure.yaml:." \
             --add-binary "advent:." \
             --collect-all openai --paths . \
             packaging/cavebridge_entry.py
+          mv dist/cavebridge dist/cavebridge-macos-arm64
+          mkdir -p out
+          tar -C dist -czf out/cavebridge-macos-arm64.tar.gz cavebridge-macos-arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cavebridge-macos-arm64
+          path: out/*
+      - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/*
+          append_body: false
+          body: |
+            Download the build for your platform.
 
-      # ---- Windows: native advent.exe via MSYS2/mingw-w64, then bundle ----
-      - name: Set up MSYS2 (Windows)
-        if: runner.os == 'Windows'
+            - **Linux / macOS** — extract the `.tar.gz`, then run the `cavebridge`
+              binary inside from a terminal (see the README; on macOS clear the
+              Gatekeeper quarantine first).
+            - **Windows** — run the `.exe` (double-click or from PowerShell/cmd).
+
+            On first launch CaveBridge asks for your LLM connection (or set the
+            `OPENAI_*` env vars).
+
+  # Windows: a single double-clickable .exe (onefile). advent.exe via MSYS2/mingw-w64.
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python deps (front-end + bundler)
+        run: pip install pyyaml openai pyinstaller
+      - name: Set up MSYS2
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
@@ -101,16 +127,12 @@ jobs:
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-python
             mingw-w64-x86_64-python-yaml
-
-      - name: Build engine (Windows / MSYS2)
-        if: runner.os == 'Windows'
+      - name: Build engine (MSYS2)
         shell: msys2 {0}
         run: |
           make CFLAGS="-DADVENT_AUTOSAVE -DADVENT_NO_EDITLINE" LIBS=
           test -f advent.exe || cp advent advent.exe
-
-      - name: Build bundle (Windows)
-        if: runner.os == 'Windows'
+      - name: Build one-file bundle
         shell: pwsh
         run: |
           pyinstaller --onefile --name cavebridge --noconfirm `
@@ -118,31 +140,25 @@ jobs:
             --add-binary "advent.exe;." `
             --collect-all openai --paths . `
             packaging/cavebridge_entry.py
-
-      - name: Stage artifact
-        shell: bash
-        run: |
-          mkdir -p out
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            cp dist/cavebridge.exe "out/${{ matrix.asset }}.exe"
-          else
-            cp dist/cavebridge "out/${{ matrix.asset }}"
-          fi
-
+          New-Item -ItemType Directory -Force out | Out-Null
+          Copy-Item dist/cavebridge.exe out/cavebridge-windows-x86_64.exe
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.asset }}
+          name: cavebridge-windows-x86_64
           path: out/*
-
       - name: Attach to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: out/*
-          # Static body, REPLACED (not appended) on each call, so the three build
-          # jobs don't each tack on their own "Full Changelog" line.
           append_body: false
           body: |
-            Self-contained builds — download the file for your platform and run it.
-            On first launch CaveBridge sets up your LLM connection (or set the
-            `OPENAI_*` env vars). See the README to get started.
+            Download the build for your platform.
+
+            - **Linux / macOS** — extract the `.tar.gz`, then run the `cavebridge`
+              binary inside from a terminal (see the README; on macOS clear the
+              Gatekeeper quarantine first).
+            - **Windows** — run the `.exe` (double-click or from PowerShell/cmd).
+
+            On first launch CaveBridge asks for your LLM connection (or set the
+            `OPENAI_*` env vars).

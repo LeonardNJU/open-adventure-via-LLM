@@ -96,24 +96,23 @@ them anytime in-game with `/config`.
 
 ### Download a prebuilt binary (recommended)
 
-Single-file executables — no Python, no compiler, no dependencies — are attached to
-[**Releases**](../../releases). Download the one for your platform and run it; the first
-run walks you through connecting to your LLM.
+Self-contained builds — no Python, no compiler, no dependencies — are attached to
+[**Releases**](../../releases). The first launch walks you through connecting to your LLM.
 
 - **Windows** — download `cavebridge-windows-x86_64.exe`. Double-click it (it opens its
   own console window) or run it from PowerShell/cmd.
-- **macOS** — it's a command-line program, so **run it from Terminal, not by
-  double-clicking** (double-clicking just opens the raw file in a text editor). It's
-  unsigned, so also clear Gatekeeper's quarantine flag once:
+- **macOS** — download `cavebridge-macos-arm64.tar.gz`. It's a command-line program, so
+  **run it from Terminal, not by double-clicking** (double-clicking just opens the raw
+  file in a text editor). It's unsigned, so clear Gatekeeper's quarantine flag once:
   ```bash
-  chmod +x cavebridge-macos-arm64
-  xattr -d com.apple.quarantine cavebridge-macos-arm64   # allow an unsigned binary
-  ./cavebridge-macos-arm64
+  tar xzf cavebridge-macos-arm64.tar.gz
+  xattr -dr com.apple.quarantine cavebridge-macos-arm64   # allow an unsigned binary
+  ./cavebridge-macos-arm64/cavebridge
   ```
-- **Linux** — run it from a terminal:
+- **Linux** — download `cavebridge-linux-x86_64.tar.gz`, extract, and run from a terminal:
   ```bash
-  chmod +x cavebridge-linux-x86_64
-  ./cavebridge-linux-x86_64
+  tar xzf cavebridge-linux-x86_64.tar.gz
+  ./cavebridge-linux-x86_64/cavebridge
   ```
 
 ### Build from source (Linux / macOS)
