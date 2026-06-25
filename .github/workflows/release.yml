@@ -45,7 +45,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: out/*
-          generate_release_notes: true
+          # Static body, REPLACED (not appended) on each call, so the three build
+          # jobs don't each tack on their own "Full Changelog" line.
+          append_body: false
+          body: |
+            Self-contained builds — download the file for your platform and run it.
+            On first launch CaveBridge sets up your LLM connection (or set the
+            `OPENAI_*` env vars). See the README to get started.
 
   # macOS (arm64) + Windows: one-file bundles on their native runners.
   desktop:
@@ -128,4 +134,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: out/*
-          generate_release_notes: true
+          # Static body, REPLACED (not appended) on each call, so the three build
+          # jobs don't each tack on their own "Full Changelog" line.
+          append_body: false
+          body: |
+            Self-contained builds — download the file for your platform and run it.
+            On first launch CaveBridge sets up your LLM connection (or set the
+            `OPENAI_*` env vars). See the README to get started.
