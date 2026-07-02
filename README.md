@@ -229,6 +229,7 @@ anyone may play, modify, and redistribute it.
 - Some assets/docs are CC-BY-4.0 or MIT-0 (see per-file `SPDX-License-Identifier` headers).
 - **CaveBridge** (the `cavebridge/` LLM front-end) — © 2026 Leonard Li and CaveBridge
   contributors, BSD-2-Clause.
+- **Linux.do** - friend link for advertisement!
 
 The original engine and all its copyright notices are retained unmodified, as the license
 requires.
